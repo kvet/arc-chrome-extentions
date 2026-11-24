@@ -7,7 +7,11 @@ Two small Chrome extensions that bring back a couple of things people miss after
 | [**Kept Tabs**](#kept-tabs) | Arc-style pinned tabs that can live anywhere, tab groups included. A kept tab has a home URL, and closing it reopens it at home. |
 | [**PR Live Groups**](#pr-live-groups) | Keeps Chrome tab groups in sync with GitHub pull request searches, for example "my open PRs" and "PRs waiting for my review". |
 
+They're built to be used with Chrome's **vertical tabs**: kept tabs and PR groups sit in the side tab list the way Arc's sidebar did. They work with the regular horizontal tab strip too.
+
 Both are plain Manifest V3 extensions with no build step, no dependencies and no tracking. They need Chrome 120 or newer.
+
+![Kept Tabs with vertical tabs](docs/screenshots/kept-tabs.png)
 
 ## Install
 
@@ -33,6 +37,8 @@ Chrome pinned tabs are stuck at the far left of the window and can't go in a tab
 - **Closing it reopens it** in the background, at its home URL, in the same window, group and position.
 - If you browse away from home, the toolbar badge turns orange. One click takes you back.
 - Kept tabs survive browser restarts. On startup the extension matches them to restored tabs by URL and reopens any that are missing.
+
+In the screenshot above, Hacker News, the two Chrome/MDN docs and the two `cli/cli` tabs are kept. The active MDN tab has wandered off its home page, so the toolbar icon shows an orange dot. The tab list itself doesn't mark kept tabs, so the toolbar icon and the manager page are where you see them.
 
 ### Using it
 
@@ -67,7 +73,11 @@ Change them at `chrome://extensions/shortcuts`. If another extension already use
 
 ### Manager page
 
-**Kept tabs…** in the toolbar menu (or **Extension options**) lists every kept tab by group, with its state: at home, wandered off, or closed with its window. From there you can:
+**Kept tabs…** in the toolbar menu (or **Extension options**) lists every kept tab by group, with its state: at home, wandered off, or closed with its window.
+
+![Kept Tabs manager page](docs/screenshots/kept-tabs-manager.png)
+
+From there you can:
 
 - **Show** or **Reopen** a kept tab, and **Unkeep** it
 - **Close unkept tabs** in this window or in all windows. Pinned tabs, kept tabs and the manager page itself always stay open.
@@ -91,6 +101,10 @@ PR Live Groups runs GitHub searches on a timer and makes a collapsed tab group h
 
 When a PR shows up in a search, its tab is opened in the group. When it drops out (merged, closed, review done), its tab is closed. Click the toolbar icon to sync right away.
 
+![PR Live Groups with vertical tabs](docs/screenshots/pr-live-groups.png)
+
+The screenshot uses two demo groups on the public `cli/cli` repo: **Needs changes** (expanded) and **Needs review** (collapsed, 15 PRs).
+
 ### Setup
 
 1. Right-click the toolbar icon → **Options**.
@@ -106,6 +120,8 @@ Team | blue | is:pr is:open org:my-org team-review-requested:my-org/my-team
 ```
 
 The sync interval defaults to 1 minute and can't go below 0.5.
+
+![PR Live Groups options page](docs/screenshots/pr-live-groups-options.png)
 
 ### GitHub token
 
@@ -128,10 +144,13 @@ The token is stored unencrypted in the extension's local storage on your machine
 ## Repository layout
 
 ```
-kept-tabs/          Kept Tabs extension (load this folder unpacked)
-pr-live-groups/     PR Live Groups extension (load this folder unpacked)
-scripts/package.sh  Builds the release zips into dist/
-.github/workflows/  Publishes a GitHub release when a v* tag is pushed
+kept-tabs/              Kept Tabs extension (load this folder unpacked)
+pr-live-groups/         PR Live Groups extension (load this folder unpacked)
+scripts/package.sh      Builds the release zips and Chrome Web Store zips into dist/
+scripts/screenshots.mjs Regenerates docs/screenshots/ (see the comment at the top of the file)
+docs/screenshots/       README screenshots, 1280x800 so they can be reused on the Web Store
+STORE.md                Chrome Web Store listing text, permission justifications and privacy answers
+.github/workflows/      Publishes a GitHub release when a v* tag is pushed
 ```
 
 ## Releasing
@@ -146,3 +165,5 @@ scripts/package.sh  Builds the release zips into dist/
    ```
 
 The [release workflow](.github/workflows/release.yml) runs `scripts/package.sh` and attaches `kept-tabs-<version>.zip` and `pr-live-groups-<version>.zip` to a new GitHub release. To build the zips locally, run `scripts/package.sh` and look in `dist/`.
+
+`scripts/package.sh` also writes `dist/store/<extension>-<version>.zip`, with `manifest.json` at the root of the zip, which is the layout the Chrome Web Store upload expects. See [STORE.md](STORE.md) for the listing.
