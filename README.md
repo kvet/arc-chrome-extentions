@@ -1,27 +1,28 @@
 # Arc-style Chrome extensions
 
-Two small Chrome extensions that bring back a couple of things people miss after moving from Arc to Chrome:
+Three small Chrome extensions that bring back a few things people miss after moving from Arc to Chrome:
 
 | Extension | What it does |
 |---|---|
 | [**Kept Tabs**](#kept-tabs) | Arc-style pinned tabs that can live anywhere, tab groups included. A kept tab has a home URL, and closing it reopens it at home. |
 | [**PR Live Groups**](#pr-live-groups) | Keeps Chrome tab groups in sync with GitHub pull request searches, for example "my open PRs" and "PRs waiting for my review". |
+| [**Copy URL**](#copy-url) | Arc's <kbd>⌘⇧C</kbd> (<kbd>Ctrl+Shift+C</kbd> on Windows and Linux): copies the current tab's URL and shows a "Copied URL" toast. |
 
-They're built to be used with Chrome's **vertical tabs**: kept tabs and PR groups sit in the side tab list the way Arc's sidebar did. They work with the regular horizontal tab strip too.
+Kept Tabs and PR Live Groups are built to be used with Chrome's **vertical tabs**: kept tabs and PR groups sit in the side tab list the way Arc's sidebar did. They work with the regular horizontal tab strip too.
 
-Both are plain Manifest V3 extensions with no build step, no dependencies and no tracking. They need Chrome 120 or newer.
+All three are plain Manifest V3 extensions with no build step, no dependencies and no tracking. They need Chrome 120 or newer.
 
 ![Kept Tabs with vertical tabs](docs/screenshots/kept-tabs.png)
 
 ## Install
 
-1. Download `kept-tabs-<version>.zip` and/or `pr-live-groups-<version>.zip` from the [latest release](../../releases/latest).
+1. Download the zips you want (`kept-tabs-<version>.zip`, `pr-live-groups-<version>.zip`, `copy-url-<version>.zip`) from the [latest release](../../releases/latest).
 2. Unzip each one into a folder you will keep, for example `~/Extensions/kept-tabs`. **Don't delete or move this folder later:** Chrome loads the extension from it.
 3. Open `chrome://extensions` and turn on **Developer mode** (top right).
 4. Click **Load unpacked** and pick the unzipped folder.
 5. Pin the extension's icon to the toolbar (puzzle-piece menu → pin) so it's one click away.
 
-To run from source instead, clone this repo and use **Load unpacked** on `kept-tabs/` or `pr-live-groups/`.
+To run from source instead, clone this repo and use **Load unpacked** on `kept-tabs/`, `pr-live-groups/` or `copy-url/`.
 
 ### Updating
 
@@ -141,11 +142,34 @@ The token is stored unencrypted in the extension's local storage on your machine
 - If a sync fails, the toolbar icon shows a red **!**. Hover it to see the error, or check the options page, which shows the time and result of the last sync.
 - GitHub's search API allows 30 requests per minute, and each group uses one request per sync. That leaves plenty of room unless you add a lot of groups and set a very short interval.
 
+## Copy URL
+
+Press <kbd>⌘⇧C</kbd> (<kbd>Ctrl+Shift+C</kbd> on Windows and Linux) to copy the current tab's URL, like in Arc. A "Copied URL" toast appears at the top of the page, and the toolbar icon shows a green ✓ for a moment. Clicking the toolbar icon copies the URL too.
+
+![Copy URL toast and toolbar check](docs/screenshots/copy-url.png)
+
+### Set the shortcut (one time)
+
+Chrome already uses <kbd>⌘⇧C</kbd> / <kbd>Ctrl+Shift+C</kbd> for DevTools' "inspect element", so it won't hand that key to a newly installed extension on its own. On install, Copy URL opens a page that walks you through it:
+
+1. Open `chrome://extensions/shortcuts`.
+2. Find **Copy URL** and click the pencil next to "Copy the current tab's URL".
+3. Press <kbd>⌘⇧C</kbd> (or <kbd>Ctrl+Shift+C</kbd>).
+
+Any other combination works too if you'd rather keep the DevTools one.
+
+### Good to know
+
+- The copy works on every page, including `chrome://` pages, the Chrome Web Store and PDFs. Extensions can't draw on those pages, so the toast doesn't appear there, only the ✓ on the toolbar icon (if it's pinned).
+- It copies exactly what's in the address bar, `#hash` and query string included.
+- It only reads the URL of the tab you invoke it on, when you invoke it. That's why Chrome shows no permission warning on install.
+
 ## Repository layout
 
 ```
 kept-tabs/              Kept Tabs extension (load this folder unpacked)
 pr-live-groups/         PR Live Groups extension (load this folder unpacked)
+copy-url/               Copy URL extension (load this folder unpacked)
 scripts/package.sh      Builds the release zips and Chrome Web Store zips into dist/
 scripts/screenshots.mjs Regenerates docs/screenshots/ (see the comment at the top of the file)
 docs/screenshots/       README screenshots, 1280x800 so they can be reused on the Web Store
@@ -164,6 +188,6 @@ STORE.md                Chrome Web Store listing text, permission justifications
    git push origin main v0.2.0
    ```
 
-The [release workflow](.github/workflows/release.yml) runs `scripts/package.sh` and attaches `kept-tabs-<version>.zip` and `pr-live-groups-<version>.zip` to a new GitHub release. To build the zips locally, run `scripts/package.sh` and look in `dist/`.
+The [release workflow](.github/workflows/release.yml) runs `scripts/package.sh` and attaches a `<extension>-<version>.zip` for each extension to a new GitHub release. To build the zips locally, run `scripts/package.sh` and look in `dist/`.
 
 `scripts/package.sh` also writes `dist/store/<extension>-<version>.zip`, with `manifest.json` at the root of the zip, which is the layout the Chrome Web Store upload expects. See [STORE.md](STORE.md) for the listing.

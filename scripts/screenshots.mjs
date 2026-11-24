@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Stages demo scenes in a throwaway Chrome profile (vertical tabs on, both extensions loaded)
+// Stages demo scenes in a throwaway Chrome profile (vertical tabs on, one extension loaded per scene)
 // and captures the browser window into docs/screenshots/ at 1280x800 (Chrome Web Store size).
 //
 // Requirements: macOS, Google Chrome, Node 22+, Xcode command line tools (swift), and Screen
@@ -7,7 +7,7 @@
 // GITHUB_TOKEN, or whatever `gh auth token` prints. It stays in the throwaway profile, which is
 // deleted at the end.
 //
-//   node scripts/screenshots.mjs [kept|pr ...]
+//   node scripts/screenshots.mjs [kept|pr|copy ...]
 
 import { execFileSync, spawn } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -33,6 +33,7 @@ function extensionId(path) {
 const EXT = {
   kept: { path: join(ROOT, "kept-tabs") },
   pr: { path: join(ROOT, "pr-live-groups") },
+  copy: { path: join(ROOT, "copy-url") },
 };
 for (const ext of Object.values(EXT)) {
   ext.id = extensionId(ext.path);
@@ -116,6 +117,9 @@ async function launch(pinned) {
   const inPage = (ext, page, body) =>
     evaluate((t) => t.type === "page" && t.url.startsWith(`chrome-extension://${ext.id}/${page}`), body);
 
+  // Runs an async function body inside a web page tab whose URL starts with the given prefix.
+  const inTab = (urlPrefix, body) => evaluate((t) => t.type === "page" && t.url.startsWith(urlPrefix), body);
+
   async function evaluate(match, body) {
     const sessionId = await attach(match);
     const result = await send(
@@ -157,7 +161,7 @@ async function launch(pinned) {
     rmSync(profile, { recursive: true, force: true });
   }
 
-  return { inExtension, inPage, capture, close };
+  return { inExtension, inPage, inTab, capture, close };
 }
 
 async function keptScene() {
@@ -274,8 +278,40 @@ async function prScene() {
   }
 }
 
+async function copyScene() {
+  const page = "https://developer.chrome.com/docs/extensions/reference/api/commands";
+  const chrome = await launch(EXT.copy);
+  try {
+    // Chrome can't be made to fire an extension command from here, so show what a press of
+    // Cmd+Shift+C leaves on screen: the green check on the toolbar icon and the page toast.
+    const toastSource = await chrome.inExtension(
+      EXT.copy,
+      `
+      const [win] = await chrome.windows.getAll({ windowTypes: ["normal"] });
+      const open = (url, active = false) => chrome.tabs.create({ windowId: win.id, url, active });
+      // about:blank and the welcome page (opened on install because Chrome leaves the shortcut
+      // unassigned). Without the tabs permission their URLs aren't visible, so close them all.
+      const initial = await chrome.tabs.query({ windowId: win.id });
+      await open("https://news.ycombinator.com/");
+      await open("https://github.com/cli/cli");
+      await open("https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API");
+      const tab = await open(${JSON.stringify(page)}, true);
+      await chrome.tabs.remove(initial.map((t) => t.id));
+      await new Promise((r) => setTimeout(r, 5000));
+      await chrome.action.setBadgeBackgroundColor({ tabId: tab.id, color: "#1a7f37" });
+      await chrome.action.setBadgeText({ tabId: tab.id, text: "✓" });
+      return showToast.toString();
+      `,
+    );
+    await chrome.inTab(page, `(${toastSource})("Copied URL", 60000);`);
+    await chrome.capture("copy-url");
+  } finally {
+    await chrome.close();
+  }
+}
+
 mkdirSync(OUT, { recursive: true });
-const scenes = { kept: keptScene, pr: prScene };
+const scenes = { kept: keptScene, pr: prScene, copy: copyScene };
 const wanted = process.argv.slice(2);
 for (const name of wanted.length ? wanted : Object.keys(scenes)) {
   await scenes[name]();

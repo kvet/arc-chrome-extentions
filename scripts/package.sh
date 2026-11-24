@@ -9,7 +9,7 @@ dist="$root/dist"
 rm -rf "$dist"
 mkdir -p "$dist/store"
 
-for ext in kept-tabs pr-live-groups; do
+for ext in kept-tabs pr-live-groups copy-url; do
   version="$(sed -n 's/^ *"version": *"\([^"]*\)".*/\1/p' "$root/$ext/manifest.json" | head -n 1)"
   if [ -z "$version" ]; then
     echo "No version in $ext/manifest.json" >&2

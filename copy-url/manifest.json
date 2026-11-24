@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Copy URL",
+  "version": "0.1.0",
+  "description": "Arc-style Cmd+Shift+C (Ctrl+Shift+C on Windows and Linux): copies the current tab's URL.",
+  "minimum_chrome_version": "120",
+  "permissions": ["activeTab", "scripting", "offscreen", "clipboardWrite"],
+  "background": { "service_worker": "background.js" },
+  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" },
+  "action": {
+    "default_title": "Copy URL",
+    "default_icon": { "16": "icons/16.png", "32": "icons/32.png" }
+  },
+  "commands": {
+    "copy-url": {
+      "suggested_key": { "default": "Ctrl+Shift+C", "mac": "Command+Shift+C" },
+      "description": "Copy the current tab's URL"
+    }
+  }
+}

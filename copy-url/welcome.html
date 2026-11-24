@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Copy URL: set the shortcut</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #fff;
+        --fg: #1f2328;
+        --muted: #59636e;
+        --card: #f6f8fa;
+        --border: #d1d9e0;
+        --accent: #1f6feb;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1117;
+          --fg: #e6edf3;
+          --muted: #9198a1;
+          --card: #151b23;
+          --border: #3d444d;
+          --accent: #4493f8;
+        }
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      main {
+        max-width: 560px;
+        margin: 64px auto;
+        padding: 0 16px;
+      }
+      h1 {
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      h1 img {
+        width: 36px;
+        height: 36px;
+      }
+      ol {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px 16px 16px 36px;
+      }
+      li + li {
+        margin-top: 6px;
+      }
+      kbd {
+        font: 13px ui-monospace, SFMono-Regular, Menlo, monospace;
+        border: 1px solid var(--border);
+        border-bottom-width: 2px;
+        border-radius: 5px;
+        padding: 1px 5px;
+      }
+      button {
+        font: inherit;
+        font-weight: 600;
+        color: #fff;
+        background: var(--accent);
+        border: 0;
+        border-radius: 8px;
+        padding: 9px 16px;
+        cursor: pointer;
+      }
+      .muted {
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1><img src="icons/128.png" alt="" />One more step: set the shortcut</h1>
+      <p>
+        Chrome doesn't let a new extension claim <kbd class="key">⌘⇧C</kbd> on its own, because the key is already
+        taken by DevTools' "inspect element". You can still give it to Copy URL yourself:
+      </p>
+      <ol>
+        <li>Click the button below to open Chrome's extension shortcuts page.</li>
+        <li>Find <strong>Copy URL</strong> and click the pencil next to "Copy the current tab's URL".</li>
+        <li>Press <kbd class="key">⌘⇧C</kbd>.</li>
+      </ol>
+      <p><button id="open">Open extension shortcuts</button></p>
+      <p class="muted">
+        Until then, clicking the Copy URL icon in the toolbar copies the URL too. Pin it from the puzzle-piece menu
+        to keep it in reach.
+      </p>
+    </main>
+    <script src="welcome.js"></script>
+  </body>
+</html>

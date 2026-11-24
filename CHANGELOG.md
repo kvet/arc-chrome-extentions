@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.0 (unreleased)
+
+### Copy URL 0.1.0
+
+- New extension. `Cmd+Shift+C` (`Ctrl+Shift+C` on Windows and Linux) or a toolbar icon click copies the current tab's URL.
+- Shows a "Copied URL" toast on the page and a green ✓ on the toolbar icon. Works on `chrome://` pages too, with the badge only.
+- Chrome won't auto-assign a shortcut that DevTools already uses, so on install a welcome page explains how to set it on `chrome://extensions/shortcuts`.
+
 ## v0.1.0 (2026-11-24)
 
 First release.

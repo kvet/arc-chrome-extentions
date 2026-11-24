@@ -1,6 +1,6 @@
 # Chrome Web Store listings
 
-Copy-paste material for publishing both extensions on the Chrome Web Store, so people can install them without Developer mode and get updates automatically.
+Copy-paste material for publishing the extensions on the Chrome Web Store, so people can install them without Developer mode and get updates automatically.
 
 ## Publishing checklist
 
@@ -102,14 +102,57 @@ Opens and closes tabs in Chrome tab groups so that each group matches the result
 
 ---
 
+## Copy URL
+
+**Name:** Copy URL
+
+**Summary:**
+Arc-style Cmd+Shift+C (Ctrl+Shift+C on Windows and Linux): copies the current tab's URL.
+
+**Category:** Productivity → Tools
+
+**Description:**
+
+```
+Copy the current tab's URL with one shortcut, like Arc's Cmd+Shift+C.
+
+• Press Cmd+Shift+C (Ctrl+Shift+C on Windows and Linux), or click the toolbar icon.
+• A small "Copied URL" toast confirms it, and the toolbar icon shows a green check.
+• Works on every page, including chrome:// pages and PDFs.
+
+Chrome reserves Cmd+Shift+C / Ctrl+Shift+C for DevTools, so it asks you to assign the shortcut once on chrome://extensions/shortcuts. The extension shows you how right after install.
+
+Reads only the URL of the tab you invoke it on, when you invoke it. No accounts, no network requests, no tracking.
+```
+
+**Single purpose:**
+Copies the URL of the current tab to the clipboard on a keyboard shortcut or toolbar click.
+
+**Permission justifications:**
+
+| Permission | Justification |
+|---|---|
+| `activeTab` | Reads the URL of the tab the user invokes the extension on (shortcut or toolbar click), and allows showing the "Copied URL" toast on that tab. No access to any other tab or at any other time. |
+| `scripting` | Draws the short "Copied URL" confirmation toast on the current page, using the access `activeTab` grants. |
+| `offscreen` | Service workers can't access the clipboard, so the URL is copied from an offscreen document. |
+| `clipboardWrite` | Writes the tab's URL to the clipboard. |
+
+**Remote code:** No.
+
+**Data usage:** The extension stores nothing. It reads the current tab's URL only when the user presses the shortcut or clicks the icon, and writes it to the clipboard. If the form requires it, declare **Web history** as handled, and certify that it isn't sold, isn't used for unrelated purposes and isn't used for creditworthiness.
+
+---
+
 ## Privacy policy
 
-> **Kept Tabs and PR Live Groups: privacy policy**
+> **Kept Tabs, PR Live Groups and Copy URL: privacy policy**
 >
-> Neither extension collects, sells or shares personal data, and neither sends any data to the developer.
+> None of these extensions collects, sells or shares personal data, and none sends any data to the developer.
 >
 > **Kept Tabs** stores the URLs, titles and tab group names of the tabs you choose to keep, and of the tabs closed by your last clean-up, in your browser's local extension storage. It makes no network requests.
 >
 > **PR Live Groups** stores the GitHub token, search queries and settings you enter in your browser's local extension storage. It sends the token and your search queries only to the GitHub API (`api.github.com`) to fetch the matching pull requests. It sends nothing anywhere else.
+>
+> **Copy URL** reads the URL of the current tab only when you press its shortcut or click its icon, and writes it to your clipboard. It stores nothing and makes no network requests.
 >
 > Removing an extension deletes everything it stored.
