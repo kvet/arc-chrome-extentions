@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>PR Live Groups</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; max-width: 720px; margin: 24px auto; padding: 0 16px; }
+      label { display: block; font-weight: 600; margin-top: 16px; }
+      input, textarea { width: 100%; box-sizing: border-box; font: 13px ui-monospace, monospace; padding: 6px; }
+      textarea { height: 140px; }
+      .hint { color: #666; font-size: 12px; margin-top: 4px; }
+      button { margin-top: 16px; padding: 6px 14px; }
+      #status { margin-top: 12px; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <h1>PR Live Groups</h1>
+
+    <label for="token">GitHub token</label>
+    <input id="token" type="password" autocomplete="off" />
+    <div class="hint">Run <code>gh auth token</code> in a terminal and paste the result, or use a read-only fine-grained token.</div>
+
+    <label for="groups">Groups</label>
+    <textarea id="groups"></textarea>
+    <div class="hint">One group per line: <code>Title | color | GitHub search query</code>. Colors: grey, blue, red, yellow, green, pink, purple, cyan, orange.</div>
+
+    <label for="interval">Sync every (minutes)</label>
+    <input id="interval" type="number" min="0.5" step="0.5" />
+
+    <button id="save">Save and sync</button>
+    <div id="status"></div>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

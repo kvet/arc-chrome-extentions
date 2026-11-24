@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kept tabs</title>
+    <link rel="icon" href="icons/32.png" />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --fg: #1f2328;
+        --muted: #656d76;
+        --line: #d0d7de;
+        --home: #1e8e3e;
+        --wandered: #e8710a;
+        --parked: #8c959f;
+        --button: #f6f8fa;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1117;
+          --fg: #e6edf3;
+          --muted: #8d96a0;
+          --line: #30363d;
+          --button: #21262d;
+        }
+      }
+      body { background: var(--bg); color: var(--fg); font: 14px system-ui, sans-serif; max-width: 860px; margin: 24px auto; padding: 0 16px; }
+      h1 { font-size: 20px; display: flex; align-items: center; gap: 10px; }
+      h1 img { width: 24px; height: 24px; }
+      h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin: 20px 0 6px; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+      button { background: var(--button); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 5px 12px; font: inherit; cursor: pointer; }
+      button:disabled { opacity: 0.5; cursor: default; }
+      button.danger { border-color: #cf222e; color: #cf222e; }
+      ul { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 8px; }
+      li { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-top: 1px solid var(--line); }
+      li:first-child { border-top: none; }
+      .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+      .home { background: var(--home); }
+      .wandered { background: var(--wandered); }
+      .parked { background: var(--parked); }
+      .text { flex: 1; min-width: 0; }
+      .title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .url { color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .state { color: var(--muted); font-size: 12px; flex: none; }
+      #status { color: var(--muted); min-height: 1.4em; }
+      .empty { color: var(--muted); padding: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1><img src="icons/128.png" alt="" />Kept tabs</h1>
+    <div class="toolbar">
+      <button id="cleanup-window" class="danger">Close unkept tabs in this window</button>
+      <button id="cleanup-all" class="danger">Close unkept tabs in all windows</button>
+      <button id="undo">Undo last clean-up</button>
+      <button id="reopen">Reopen closed kept tabs</button>
+    </div>
+    <div id="status"></div>
+    <div id="list"></div>
+    <script src="kept.js"></script>
+  </body>
+</html>
